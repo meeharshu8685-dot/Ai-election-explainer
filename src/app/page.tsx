@@ -17,9 +17,10 @@ const GUIDED_PATHS = [
 ];
 
 const SCENARIOS = [
-  { icon: '🎓', title: "I moved to another city for college",
-    steps: ["Vote in hometown, OR transfer registration using Form 6.", "Go to voters.eci.gov.in to update your address.", "You cannot vote in both places — choose one."],
-    answer: "🎓 You moved to another city for college — here's your guide:
+  {
+    icon: '🎓', title: 'I moved to another city for college',
+    steps: ['Vote in hometown, OR transfer registration using Form 6.', 'Go to voters.eci.gov.in to update your address.', 'You cannot vote in both places — choose one.'],
+    answer: `🎓 You moved to another city for college — here's your guide:
 
 Option 1: Vote in your Hometown
 • Travel back on election day and vote at your registered constituency
@@ -32,10 +33,12 @@ Option 2: Transfer Your Registration
 
 📌 Important: You cannot vote in both places. Choose one option.
 
-💡 Tip: If elections are soon, Option 1 is faster. Apply for Option 2 early for future elections." },
-  { icon: '🎂', title: "I turned 18 recently",
-    steps: ["Must be 18 by Jan 1 of the election year.", "Register at voters.eci.gov.in using Form 6.", "Upload Aadhaar, address proof, and a photo.", "Voter ID card arrives in ~30 days."],
-    answer: "🎂 Congratulations on turning 18! Here's how to register to vote:
+💡 Tip: If elections are soon, Option 1 is faster. Apply for Option 2 early for future elections.`,
+  },
+  {
+    icon: '🎂', title: 'I turned 18 recently',
+    steps: ['Must be 18 by Jan 1 of the election year.', 'Register at voters.eci.gov.in using Form 6.', 'Upload Aadhaar, address proof, and a photo.', 'Voter ID card arrives in ~30 days.'],
+    answer: `🎂 Congratulations on turning 18! Here's how to register to vote:
 
 Step 1: Check Eligibility
 • You must be 18 as of January 1 of the qualifying year
@@ -49,33 +52,34 @@ Step 3: Upload Documents
 • 1 passport-size photograph
 
 Step 4: Track & Receive
-• You'll get a Reference Number to track your application
 • Your Voter ID (EPIC card) arrives in ~30 days
 
-🎉 Welcome to India's democracy — your vote is your voice!" },
-  { icon: '📋', title: "My name is missing from voter list",
-    steps: ["Ask the Presiding Officer to re-check the list.", "Request a 'Tender Vote' — your legal right.", "Call Voter Helpline: 1950 for immediate help.", "After election: register at voters.eci.gov.in."],
-    answer: "📋 Your name is missing from the voter list — here's what to do:
+🎉 Welcome to India's democracy — your vote is your voice!`,
+  },
+  {
+    icon: '📋', title: 'My name is missing from voter list',
+    steps: ['Ask the Presiding Officer to re-check the list.', 'Request a Tender Vote — your legal right.', 'Call Voter Helpline: 1950 for help.', 'After election: register at voters.eci.gov.in.'],
+    answer: `📋 Your name is missing from the voter list — here's what to do:
 
-At the Polling Booth — Right Now:
-1. Stay calm. Ask the Presiding Officer to check the list again carefully
-2. Show your Voter ID — they might find you under a slightly different spelling
+At the Polling Booth:
+1. Stay calm. Ask the Presiding Officer to check again
+2. Show your Voter ID — they might find you under a different spelling
 3. Request a Tender Vote (Provisional Ballot) — this is your LEGAL RIGHT!
-   • You CAN cast this vote even if your name is missing
-   • It is kept in a separate sealed envelope
-   • Counted only if the winning margin is less than total Tender Votes
+   • You CAN cast this even if your name is missing
+   • It is counted only if the winning margin is less than total Tender Votes
 4. Call Voter Helpline: 1950 for immediate guidance
 
 Fix It Permanently:
-• Go to voters.eci.gov.in
-• Check your registration status
+• Go to voters.eci.gov.in → check your registration
 • If not found: fill Form 6 to register
-• If found with errors: fill Form 8 to correct details
+• If errors: fill Form 8 to correct details
 
-💡 Always check your voter list status 2-3 weeks before election day!" },
-  { icon: '♿', title: "I have a disability",
-    steps: ["You get priority queue access — no long waiting.", "Wheelchair ramp access at all booths.", "Bring a companion to assist you inside the booth.", "Apply for home postal ballot using Form 12D."],
-    answer: "♿ Voting with a Disability — Your Complete Guide:
+💡 Always check your voter list 2-3 weeks before election day!`,
+  },
+  {
+    icon: '♿', title: 'I have a disability',
+    steps: ['You get priority queue access — no long waiting.', 'Wheelchair ramp access at all booths.', 'Bring a companion to assist you inside the booth.', 'Apply for home postal ballot using Form 12D.'],
+    answer: `♿ Voting with a Disability — Your Complete Guide:
 
 At the Polling Booth:
 • Priority Queue: Skip the long line — you have first access
@@ -83,31 +87,26 @@ At the Polling Booth:
 • Braille EVM: Available for visually impaired voters
 • Companion: You can bring a trusted adult inside the voting compartment
 
-Home Voting Option (Postal Ballot):
+Home Voting Option:
 • Cannot travel? Apply for a Postal Ballot
 • Fill Form 12D and submit to your ERO before the deadline
 • A polling officer visits your home to collect your vote
 
-How to Request in Advance:
+How to Request:
 • Call Voter Helpline: 1950
 • Contact your local ERO office
-• Apply via the Voter Helpline App
 
-If Denied Help:
-• Call 1950 immediately
-• Report via cVIGIL app
-• Note the officer's name and booth number
-
-🇮🇳 Democracy is for everyone — including you!" },
-  { icon: '👴', title: "I'm a senior citizen (80+)",
-    steps: ["Apply for postal ballot (vote from home) using Form 12D.", "A polling officer will visit your home to collect your vote.", "OR visit booth — you get priority queue access."],
-    answer: "👴 Senior Citizen Voter Guide (Age 80+):
+🇮🇳 Democracy is for everyone — including you!`,
+  },
+  {
+    icon: '👴', title: "I'm a senior citizen (80+)",
+    steps: ['Apply for postal ballot (vote from home) using Form 12D.', 'A polling officer will visit your home.', 'OR visit booth — you get priority queue access.'],
+    answer: `👴 Senior Citizen Voter Guide (Age 80+):
 
 Option 1: Vote from Home (Postal Ballot) — Recommended
-• Voters 80+ are eligible to vote by postal ballot
+• Voters 80+ are eligible for postal ballot
 • Fill Form 12D and submit to your ERO before election dates are announced
-• A polling official visits your home on a designated day
-• You mark your choice on the ballot — officer collects it securely
+• A polling official visits your home and collects your vote securely
 
 Option 2: Visit the Polling Booth
 • You get Priority Queue access — no long waits!
@@ -117,32 +116,33 @@ Option 2: Visit the Polling Booth
 How to Apply:
 • Call Voter Helpline: 1950
 • Fill Form 12D at voters.eci.gov.in
-• Apply EARLY — there are deadlines, and slots are limited
+• Apply EARLY — there are deadlines
 
-💡 Tip: Apply for postal ballot as soon as election dates are announced.
-🙏 Your vote and your wisdom matter!" },
-  { icon: '✈️', title: "I'm an NRI / live abroad",
-    steps: ["Register using Form 6A at voters.eci.gov.in.", "You MUST physically travel to India to vote.", "Go to your registered hometown constituency on election day.", "Remote/proxy voting is NOT yet available for NRIs."],
-    answer: "✈️ NRI Voter Guide — How to Vote from Abroad:
+🙏 Your vote and your wisdom matter!`,
+  },
+  {
+    icon: '✈️', title: "I'm an NRI / live abroad",
+    steps: ['Register using Form 6A at voters.eci.gov.in.', 'You MUST physically travel to India to vote.', 'Go to your registered hometown constituency.', 'Remote/proxy voting is NOT yet available.'],
+    answer: `✈️ NRI Voter Guide — How to Vote from Abroad:
 
 Yes, NRIs CAN vote in Indian elections!
 
 Step 1: Register as an Overseas Voter
 • Go to voters.eci.gov.in → 'Overseas Voter Registration' → Form 6A
 • Upload: Indian Passport copy and current overseas address proof
-• Your name gets added to the electoral roll of your hometown constituency
+• Your name gets added to your hometown constituency's electoral roll
 
 Step 2: Travel to India to Vote
-• You MUST physically travel to India to vote
+• You MUST physically travel to India to cast your vote
 • Go to your registered constituency's polling booth on election day
 • Remote, proxy, or e-voting from abroad is NOT available yet
 
 Plan Ahead:
 • Election dates are announced 4-6 weeks in advance
-• Book flights early if you plan to come back to vote
-• Check your registration status at voters.eci.gov.in before buying tickets
+• Check your registration at voters.eci.gov.in before booking tickets
 
-🇮🇳 Your roots matter. Your vote matters. Come home and vote!" },
+🇮🇳 Your roots matter. Your vote matters. Come home and vote!`,
+  },
 ];
 
 const COMPARISONS = [
