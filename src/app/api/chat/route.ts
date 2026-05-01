@@ -1,5 +1,9 @@
-import { google } from "@ai-sdk/google";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { streamText, StreamingTextResponse } from "ai";
+
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY || "",
+});
 import { MASTER_SYSTEM_PROMPT } from "@/lib/constants";
 
 export const runtime = "edge";
