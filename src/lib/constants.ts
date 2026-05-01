@@ -1,331 +1,56 @@
-export const MASTER_SYSTEM_PROMPT = `
-You are Election Copilot, a warm, intelligent, and highly interactive assistant designed to make learning about elections simple, engaging, and personalized.
-
-Your persona is friendly, neutral, and deeply knowledgeable. You want the user to feel empowered and informed.
-
-Your goals:
-1. Simplify complex election concepts into bite-sized, easy-to-understand pieces.
-2. Guide users step-by-step through processes (voting, candidacy, timelines) as if you were walking alongside them.
-3. Provide interactive simulations and scenarios that feel real.
-4. Detect misinformation and respond with factual, neutral explanations—never judgmental.
-5. Adapt your language and complexity based on the user level (beginner, student, expert).
-
-Behavior rules:
-- Be conversational and warm. Use emojis occasionally, but keep it professional.
-- Always ask clarifying questions if the user's intent is unclear. 
-- Prefer step-by-step guidance over long, dense paragraphs.
-- Use real-world examples (especially India when relevant, as this is an Indian election context).
-- Keep your tone completely neutral regarding political parties or figures (no political bias).
-- When explaining, use:
-  - clear analogies
-  - bullet points for steps
-  - simple language first, then offer a "deep dive" if they want more info.
-
-Modes:
-1. "Guide Mode" → Walk the user through processes step by step.
-2. "Learn Mode" → Explain concepts clearly and simply.
-3. "Simulation Mode" → Roleplay election scenarios with the user.
-4. "Fact Check Mode" → Verify claims and explain truth vs myth factually.
-
-Output style:
-- Start simple
-- Then offer: "Want a deeper breakdown?"
-- Keep responses interactive
-
-Safety:
-- Avoid persuasion or political bias
-- Provide balanced views
-- Encourage informed participation
-
-Simulation Engine rules:
-- Create realistic scenarios
-- Give choices
-- Respond based on user decisions
-- Add consequences
-`;
-
-export const SIMULATION_SCENARIOS = [
-  {
-    id: 'booth-name-missing',
-    title: 'The Missing Name',
-    description: 'You arrive at the polling booth but your name is missing from the list. What do you do?',
-    initialPrompt: 'You arrive at the polling booth, but after checking the electoral roll, the officer says your name is missing. What is your next move?',
-  },
-  {
-    id: 'campaign-strategy',
-    title: 'Campaign Dilemma',
-    description: 'You are a candidate with a tight budget. How do you reach your voters?',
-    initialPrompt: 'You are contesting the local elections. Your budget is limited. Do you focus on social media ads or door-to-door campaigning?',
-  }
-];
-
 export interface QAPair {
+  id: number;
+  question: string;
+  short_answer: string;
+  detailed_answer: string;
+  eli18_answer: string;
+  category: string;
   keywords: string[];
-  answer: string;
 }
 
-export const MOCK_QA_DATABASE: QAPair[] = [
-  {
-    keywords: ['hello', 'hi', 'hey', 'start', 'help', 'namaste'],
-    answer: `Hello! 👋 I'm your **Election Copilot** — your friendly guide to everything about elections in India!
-
-Here's what I can help you with today:
-
-🗳️ **Learn Mode** — Understand how elections work, from start to finish.
-🗺️ **Guide Mode** — Step-by-step walkthroughs for voting, registration, and more.
-🎮 **Simulation Mode** — Experience realistic election scenarios firsthand.
-🛡️ **Fact Check Mode** — Separate election myths from facts.
-
-So, what are you curious about? Ask me anything — like *"How do I register to vote?"* or *"What is EVM?"* and I'll explain it clearly! 😊`,
-  },
-  {
-    keywords: ['register', 'registration', 'voter id', 'voter card', 'enroll', 'sign up', 'form 6'],
-    answer: `Great question! 🗳️ Here's how to **register as a voter** in India:
-
-**Step 1: Check Eligibility**
-- You must be an Indian citizen.
-- You must be at least **18 years old** (as of January 1st of the qualifying year).
-
-**Step 2: Fill Form 6**
-- Visit the **National Voters' Service Portal**: [voters.eci.gov.in](https://voters.eci.gov.in)
-- Click on **"New Voter Registration"** and fill out **Form 6**.
-- You'll need: Aadhaar Card, Date of Birth proof, Address proof, and a recent passport-size photo.
-
-**Step 3: Submit & Track**
-- Submit online or at your local **Electoral Registration Officer (ERO)** office.
-- You'll get an **Application Reference Number** to track your status.
-
-**Step 4: Receive Your EPIC Card**
-- Once verified, your **Voter ID (EPIC Card)** will be delivered to your address — usually within **30 days**!
-
-💡 *Pro Tip:* You can also use the **Voter Helpline App** on Android/iOS to register from your phone!
-
-Want to know more about what documents you need? Just ask! 😊`,
-  },
-  {
-    keywords: ['evm', 'electronic voting machine', 'machine', 'voting machine'],
-    answer: `Excellent question! Let me explain **EVMs (Electronic Voting Machines)** simply. 🖥️
-
-**What is an EVM?**
-Think of it like a simple calculator designed for one job only: recording your vote. It has two units:
-- **Ballot Unit** — the machine in the voting booth where you press a button.
-- **Control Unit** — held by the Presiding Officer to manage the process.
-
-**Is it secure?**
-Yes! Here's why:
-- ✅ EVMs are **standalone devices** — they have NO Wi-Fi, Bluetooth, or internet connection. They physically cannot be hacked remotely.
-- ✅ They use a **one-time programmable chip** — the software is burnt in and cannot be changed.
-- ✅ They are stored in **double-locked strong rooms** with 24/7 CCTV monitoring between elections.
-- ✅ Candidates can appoint **polling agents** to watch the entire process.
-
-**VVPAT — The Paper Trail**
-Since 2013, EVMs are paired with a **Voter Verified Paper Audit Trail (VVPAT)** machine that prints a slip showing who you voted for (visible for 7 seconds). This allows for independent verification.
-
-🛡️ *Fact: "EVMs can be hacked via Bluetooth" is a common myth. It is technically impossible as they have no wireless components.*
-
-Want to know what happens to EVMs after counting? Just ask! 😊`,
-  },
-  {
-    keywords: ['how to vote', 'voting process', 'voting day', 'polling booth', 'polling day', 'cast vote', 'vote'],
-    answer: `Here's your complete **Step-by-Step Voting Day Guide** 🗳️
-
-**Before You Go:**
-- ✅ Find your polling booth: Check your Voter ID or visit [voters.eci.gov.in](https://voters.eci.gov.in).
-- ✅ Carry a valid ID: Voter ID (EPIC), Aadhaar, Passport, PAN Card, or Driving License.
-- ✅ Check the voting time (usually **7 AM to 6 PM**).
-
-**At the Polling Booth:**
-1. **Join the queue** — there are separate queues for men, women, and senior citizens.
-2. **Show your ID** to the Presiding Officer.
-3. Your name is found in the **Electoral Roll**, and your finger is marked with **indelible ink** (this prevents double voting!).
-4. You get a **voter slip** and are directed to the Ballot Unit.
-5. **Press the blue button** next to your chosen candidate's name and symbol.
-6. The **VVPAT machine** shows a printed slip of your vote for 7 seconds for confirmation.
-
-**Your Vote is Secret!** 🔒
-No one — not even the officer — can see whom you voted for. The booth has a screen for privacy.
-
-⏱️ The whole process usually takes **3-5 minutes**.
-
-Want to simulate what happens if your name is missing from the list? Switch to **Simulation Mode** and try it! 😊`,
-  },
-  {
-    keywords: ['mcc', 'model code of conduct', 'code of conduct', 'rules during election'],
-    answer: `Great question! Let's talk about the **Model Code of Conduct (MCC)** 📜
-
-**What is the MCC?**
-The Model Code of Conduct is a set of guidelines issued by the **Election Commission of India (ECI)** that kicks in the moment election dates are announced. Think of it as the "rulebook" that all political parties and candidates must follow during election season.
-
-**Key Rules of the MCC:**
-
-🚫 **What is NOT Allowed:**
-- Using government resources (vehicles, buildings, staff) for campaign work.
-- Announcing new government schemes or inaugurating projects for political gain.
-- Using religion or caste to appeal for votes.
-- Bribing voters with cash, gifts, or liquor.
-
-✅ **What IS Allowed:**
-- Peaceful rallies and public meetings (with prior permission).
-- Door-to-door campaigns.
-- Distribution of party manifestos.
-
-**How long does it last?**
-It starts from the **announcement of election dates** and remains in force until the **election results are declared**.
-
-**Who enforces it?**
-The **Election Commission of India (ECI)** is the watchdog. Violations can lead to warnings, FIRs, or even disqualification of candidates!
-
-💡 *Fun Fact: The MCC is not a statutory law — it's a voluntary code, but the Election Commission's moral authority makes it highly effective.*
-
-Want to know more about election rules? Just ask! 😊`,
-  },
-  {
-    keywords: ['candidate', 'contest', 'stand for election', 'how to be a candidate', 'election candidacy', 'nomination'],
-    answer: `Want to know how to **contest an election** in India? Here's the breakdown! 🏛️
-
-**Who Can Be a Candidate?**
-To contest a Lok Sabha (Parliament) election, you must be:
-- ✅ An Indian citizen.
-- ✅ At least **25 years old**.
-- ✅ A registered voter in India.
-- ❌ NOT holding a government office of profit.
-- ❌ NOT declared of unsound mind by a court.
-
-**The Nomination Process (Step-by-Step):**
-
-1. **File Nomination Form** — Submit Form 2B at the Returning Officer's office during the nomination period.
-2. **Pay the Security Deposit**:
-   - General candidates: ₹25,000
-   - SC/ST candidates: ₹12,500
-   *(This deposit is refunded if you get more than 1/6th of the total valid votes.)*
-3. **Scrutiny** — The Returning Officer checks your nomination for validity.
-4. **Withdrawal** — You have a period to withdraw your candidacy if you change your mind.
-5. **Campaign!** — After the final candidate list, the official campaign begins.
-
-**After the Election:**
-- Win or lose, you must submit an **election expenditure account** within 30 days. (Lok Sabha limit: ₹95 lakh per candidate!)
-
-This is a big responsibility — and a cornerstone of Indian democracy! 🇮🇳
-
-Want to simulate running a campaign? Switch to **Simulation Mode**! 😊`,
-  },
-  {
-    keywords: ['fact check', 'fake', 'myth', 'misinformation', 'rumour', 'rumor', 'false', 'true or false'],
-    answer: `🛡️ **Fact-Check Mode Activated!**
-
-Here are some common **Election Myths vs. Facts**:
-
----
-
-❌ **MYTH: "EVMs are connected to the internet and can be hacked."**
-✅ **FACT:** EVMs are completely standalone devices with no Wi-Fi, Bluetooth, or internet connection. Remote hacking is technically impossible.
-
----
-
-❌ **MYTH: "You can vote multiple times if you move fast enough."**
-✅ **FACT:** Impossible. Indelible ink is applied to your finger at the booth, and your name is struck off the electoral roll immediately after you vote.
-
----
-
-❌ **MYTH: "NOTA means the election is cancelled and re-held."**
-✅ **FACT:** NOTA (None Of The Above) is just a preference. Even if NOTA gets the most votes, the candidate with the highest votes among the contesting candidates wins.
-
----
-
-❌ **MYTH: "Voter ID is the only document you can use to vote."**
-✅ **FACT:** 12 alternative documents are accepted, including Aadhaar, Passport, Driving License, and PAN Card.
-
----
-
-Have you heard a specific claim you'd like me to fact-check? **Tell me the claim** and I'll investigate! 🔍`,
-  },
-  {
-    keywords: ['eci', 'election commission', 'who runs elections', 'who conducts elections'],
-    answer: `Great question! Let me introduce you to the **Election Commission of India (ECI)** 🏛️
-
-**What is the ECI?**
-The Election Commission of India is an **autonomous constitutional authority** responsible for administering election processes in India. It was established on **January 25, 1950** — just one day before India became a republic!
-
-*Fun fact: January 25 is celebrated as **National Voters' Day** every year! 🎉*
-
-**Structure:**
-- Led by the **Chief Election Commissioner (CEC)**.
-- Assisted by **2 Election Commissioners**.
-- All three have equal voting power on decisions.
-
-**Key Powers of the ECI:**
-- 📅 Announces election schedules and enforces the Model Code of Conduct.
-- 🚫 Can disqualify candidates and officials.
-- 🗳️ Oversees Lok Sabha, Rajya Sabha, State Assembly, and Presidential elections.
-- 🏦 Monitors election expenditure of all candidates.
-- 📺 Regulates political advertising on TV and radio.
-
-**Independence:**
-The CEC can only be removed through a process similar to removing a Supreme Court judge — requiring a special majority in both Houses of Parliament. This ensures total independence from political pressure!
-
-The ECI is the guardian of Indian democracy. 🇮🇳
-
-Want to know how a specific ECI decision impacted an election? Just ask! 😊`,
-  },
-  {
-    keywords: ['nota', 'none of the above', 'reject all'],
-    answer: `📋 Let's talk about **NOTA — None Of The Above**!
-
-**What is NOTA?**
-NOTA is an option on the ballot that allows voters to formally **reject all candidates** in an election without staying home. It was introduced by the Supreme Court of India in **2013**.
-
-**How to vote NOTA:**
-On an EVM, NOTA is the **last button** on the Ballot Unit, marked with a special symbol (a ballot paper with a cross ✗).
-
-**The Big Misconception:**
-Many people think that if NOTA wins, the election is re-held. **This is FALSE!**
-
-🔴 **Reality:** NOTA has *no legal effect* on the outcome. Even if NOTA gets more votes than any single candidate, the candidate with the **highest vote count among actual candidates** wins.
-
-**So why vote NOTA?**
-- It sends a **moral message** to political parties that their candidates were unacceptable to voters.
-- High NOTA percentages put pressure on parties to field better candidates in future elections.
-- It is a way to participate in democracy without endorsing anyone.
-
-**NOTA in Numbers:**
-- In the 2019 Lok Sabha elections, over **1.06% of all votes** (about 65 lakh votes) were cast for NOTA.
-- The highest NOTA percentage in any seat has crossed **5%** in some constituencies!
-
-Want to know anything else? I'm here to help! 😊`,
-  },
-  {
-    keywords: ['simulation', 'simulate', 'roleplay', 'scenario', 'play', 'missing name', 'name not found'],
-    answer: `🎮 **Simulation Mode: The Missing Name Scenario**
-
-*You walk into the polling booth on election day, excited to cast your vote. But when the officer checks the electoral roll... your name isn't there!*
-
----
-
-**What do you do? Choose your action:**
-
-**Option A:** "I insist the officer is wrong and demand to be allowed to vote."
-
-**Option B:** "I ask to see the ERO (Electoral Registration Officer) at the booth and show my Voter ID."
-
-**Option C:** "I give up and go home."
-
----
-
-💡 *Think carefully — your choice has consequences!*
-
-*(In this simulation, if you choose **Option B**, you'll learn about the **Tender Ballot** mechanism, a little-known right that allows you to cast a provisional vote even if your name is missing. Let me know your choice!)*`,
-  },
+export const ELECTION_QA_DB: QAPair[] = [
+  { id:1, question:"What is an election?", short_answer:"An election is a formal process where people vote to choose their leaders.", detailed_answer:"An election is a democratic process through which citizens choose representatives to govern them. In India, elections are conducted by the Election Commission of India (ECI) at various levels — national (Lok Sabha), state (Vidhan Sabha), and local (Panchayat/Municipal).", eli18_answer:"Imagine your class needs a monitor. Everyone raises hands or votes — that's an election! Adults do the same to pick their leaders.", category:"General", keywords:["what is election","election mean","define election"] },
+  { id:2, question:"Why are elections important?", short_answer:"Elections give citizens the power to choose and change their government peacefully.", detailed_answer:"Elections are the foundation of democracy. They ensure accountability of leaders, peaceful transfer of power, representation of all sections of society, and the ability of citizens to remove ineffective governments without violence.", eli18_answer:"If your class monitor was being unfair, elections let you vote for someone better next time. That's the whole point!", category:"General", keywords:["why elections","importance of election","election matter"] },
+  { id:3, question:"What is democracy?", short_answer:"Democracy is a system where the government is chosen by the people through free and fair elections.", detailed_answer:"Democracy (from Greek: demos = people, kratos = rule) is a system of government where citizens exercise power by voting. India is the world's largest democracy. Key features: free elections, fundamental rights, rule of law, independent judiciary, and freedom of press.", eli18_answer:"Democracy means the people are the boss. The government works for you, not the other way around!", category:"General", keywords:["democracy","democratic","what is democracy"] },
+  { id:4, question:"What is voting?", short_answer:"Voting is the act of expressing your choice in an election by marking a ballot or pressing an EVM button.", detailed_answer:"Voting is the fundamental act of democratic participation. In India, eligible citizens cast their vote at a designated polling booth by pressing a button on the EVM next to their chosen candidate's name/symbol. Each vote carries equal weight regardless of caste, class, or gender.", eli18_answer:"Voting is like picking your favorite option in a poll, but it actually decides who runs your city, state, or country!", category:"General", keywords:["what is voting","voting mean","define voting"] },
+  { id:5, question:"What is universal adult franchise?", short_answer:"Universal adult franchise means every adult citizen has the right to vote, regardless of gender, caste, religion, or wealth.", detailed_answer:"Universal Adult Franchise means the right to vote is given to all adult citizens without any discrimination. India adopted this from independence in 1950. The minimum voting age was reduced from 21 to 18 in 1989 via the 61st Constitutional Amendment.", eli18_answer:"It means EVERYONE who is 18+ gets a vote. Rich or poor, man or woman — one person, one vote. Always equal.", category:"General", keywords:["universal adult franchise","adult franchise","franchise"] },
+  { id:6, question:"Who can vote in India?", short_answer:"Any Indian citizen aged 18+ who is registered as a voter in the electoral roll.", detailed_answer:"To vote in India you must: (1) be an Indian citizen, (2) be at least 18 years old as of January 1 of the election year, (3) be of sound mind, (4) be registered in the electoral roll of a constituency. Note: persons under preventive detention or serving criminal sentences may be restricted.", eli18_answer:"If you're 18 or older, you're an Indian citizen, and your name is on the voter list — you can vote!", category:"General", keywords:["who can vote","eligible to vote","voting eligibility"] },
+  { id:7, question:"What is the legal voting age in India?", short_answer:"18 years.", detailed_answer:"The minimum voting age in India is 18 years. This was established by the 61st Constitutional Amendment Act of 1988, which came into effect in 1989. Previously it was 21 years. The qualifying date is January 1 of the year the electoral roll is updated.", eli18_answer:"You need to be at least 18 years old. The day you turn 18, you earn the right to vote!", category:"General", keywords:["voting age","age to vote","minimum age vote"] },
+  { id:8, question:"What is the Election Commission of India?", short_answer:"An independent constitutional body that oversees all elections in India.", detailed_answer:"The Election Commission of India (ECI) was established on January 25, 1950 under Article 324 of the Constitution. It is a permanent, independent body that conducts Lok Sabha, Rajya Sabha, State Legislative Assembly, and Presidential & Vice-Presidential elections. It has full authority over the electoral process.", eli18_answer:"Think of ECI as the 'referee' of elections — it makes sure the game (election) is played fairly by everyone.", category:"General", keywords:["eci","election commission","what is eci"] },
+  { id:9, question:"What does ECI do?", short_answer:"ECI announces election dates, enforces the Model Code of Conduct, manages EVMs, and ensures free & fair elections.", detailed_answer:"ECI's key functions: (1) Prepares and updates electoral rolls, (2) Announces election schedules, (3) Enforces Model Code of Conduct, (4) Registers political parties and assigns symbols, (5) Monitors election expenditure, (6) Deploys EVMs and VVPAT machines, (7) Adjudicates disputes during elections.", eli18_answer:"ECI makes the rules, watches the game, and gives red cards to anyone who cheats in elections!", category:"General", keywords:["what does eci do","role of eci","election commission role"] },
+  { id:10, question:"What are free and fair elections?", short_answer:"Elections where all eligible citizens can vote freely without fear, coercion, or manipulation.", detailed_answer:"Free and fair elections require: (1) Universal suffrage, (2) Secret ballot, (3) Independent election management, (4) Transparent counting, (5) Equal access to media, (6) Prevention of voter intimidation, (7) Independent judiciary to resolve disputes. India's ECI works to ensure all these conditions.", eli18_answer:"Imagine a school vote where no one forces you, no one peeks at your choice, and every vote is counted honestly. That's free and fair!", category:"General", keywords:["free fair election","free election","fair election"] },
+  { id:11, question:"What is Lok Sabha?", short_answer:"The lower house of India's Parliament, directly elected by citizens.", detailed_answer:"Lok Sabha (House of the People) is the lower house of India's bicameral Parliament. Key facts: 543 elected seats + 2 nominated (Anglo-Indian, now discontinued); Members are directly elected by voters in constituencies; Maximum term is 5 years; Can be dissolved earlier by the President on advice of PM; Controls the budget and is more powerful than Rajya Sabha on money bills.", eli18_answer:"Lok Sabha is like the main team in Parliament. The people you directly vote for go there. 543 seats, 5-year terms.", category:"General", keywords:["lok sabha","lower house","house of the people"] },
+  { id:12, question:"What is Rajya Sabha?", short_answer:"The upper house of India's Parliament, indirectly elected by state legislatures.", detailed_answer:"Rajya Sabha (Council of States) is the upper house of India's Parliament. Key facts: 245 seats (233 elected + 12 nominated by President); Members are elected by elected MLAs of state legislative assemblies; Rajya Sabha is permanent — it cannot be dissolved; Members serve 6-year terms, with 1/3rd retiring every 2 years.", eli18_answer:"Rajya Sabha is like a review board for laws. State governments send people there (not direct public vote). It never fully shuts down.", category:"General", keywords:["rajya sabha","upper house","council of states"] },
+  { id:13, question:"Difference between Lok Sabha and Rajya Sabha?", short_answer:"Lok Sabha is directly elected, more powerful, can be dissolved. Rajya Sabha is indirectly elected, permanent, reviews laws.", detailed_answer:"Key differences: (1) Election: Lok Sabha by public directly; Rajya Sabha by MLAs. (2) Term: Lok Sabha 5 years; Rajya Sabha 6 years (staggered). (3) Dissolution: Lok Sabha can be dissolved; Rajya Sabha cannot. (4) Power: Lok Sabha is supreme on money bills; Rajya Sabha can delay but not block. (5) Size: Lok Sabha 543 seats; Rajya Sabha 245 seats.", eli18_answer:"Lok Sabha = directly voted by you, more powerful. Rajya Sabha = chosen by state representatives, reviews and suggests changes to laws.", category:"General", keywords:["difference lok sabha rajya sabha","lok vs rajya","compare lok rajya"] },
+  { id:14, question:"What is Vidhan Sabha?", short_answer:"The state-level equivalent of Lok Sabha — the lower house of a state legislature, directly elected by voters.", detailed_answer:"Vidhan Sabha (State Legislative Assembly) is the lower house of state legislatures in India. Members are directly elected by voters in state constituencies. The number of seats varies by state (e.g., UP has 403, Goa has 40). MLAs are elected for 5-year terms. Most state governments are formed by the party with majority in Vidhan Sabha.", eli18_answer:"Just like you vote for MPs for Parliament, you vote for MLAs for the Vidhan Sabha — but it only runs your state, not the whole country.", category:"General", keywords:["vidhan sabha","state assembly","state legislature","legislative assembly"] },
+  { id:15, question:"Who is an MP?", short_answer:"A Member of Parliament (MP) is an elected representative in Lok Sabha or Rajya Sabha.", detailed_answer:"An MP (Member of Parliament) represents a constituency at the national level. Lok Sabha MPs are directly elected by citizens of a constituency every 5 years. Rajya Sabha MPs are elected by MLAs every 6 years. MPs participate in law-making, budget debates, and question the government in Parliament.", eli18_answer:"An MP is your voice in the country's main decision-making room. You vote them in to speak for your area in Parliament.", category:"General", keywords:["who is mp","member of parliament","what is mp"] },
+  { id:16, question:"Who is an MLA?", short_answer:"A Member of the Legislative Assembly (MLA) is an elected representative in a state's Vidhan Sabha.", detailed_answer:"An MLA (Member of Legislative Assembly) represents a constituency at the state level. They are directly elected by voters every 5 years. MLAs make state laws, debate the state budget, elect members to Rajya Sabha, and the majority party's MLAs elect the Chief Minister.", eli18_answer:"An MLA is your voice in your state government. They handle state issues like roads, schools, and hospitals in your area.", category:"General", keywords:["who is mla","member legislative assembly","what is mla"] },
+  { id:17, question:"Difference between MP and MLA?", short_answer:"MPs work at the national level in Parliament; MLAs work at the state level in Vidhan Sabha.", detailed_answer:"Key differences: (1) Level: MP = national; MLA = state. (2) House: MP sits in Lok/Rajya Sabha; MLA sits in Vidhan Sabha. (3) Salary: MPs earn more (₹1 lakh/month + allowances) vs MLAs (varies by state). (4) Issues: MPs deal with national policies; MLAs handle state matters like local infrastructure, education, health. (5) Election: Both directly elected (except Rajya Sabha MPs).", eli18_answer:"MP = works for the whole country. MLA = works for your state. Both are elected by you (voters)!", category:"General", keywords:["mp vs mla","difference mp mla","mp and mla"] },
+  { id:18, question:"What is a constituency?", short_answer:"A constituency is a defined geographic area whose residents elect one representative to a legislature.", detailed_answer:"India is divided into constituencies for elections. For Lok Sabha: 543 constituencies across India, each electing 1 MP. For state elections: each state is divided into assembly constituencies electing MLAs. Delimitation Commission periodically redraws constituency boundaries based on population.", eli18_answer:"Think of India cut into 543 puzzle pieces. Each piece is a constituency, and the people in each piece vote for their own MP.", category:"General", keywords:["constituency","what is constituency","define constituency"] },
+  { id:19, question:"How do I vote?", short_answer:"Go to your assigned polling booth, show ID, get ink on your finger, press the EVM button next to your chosen candidate.", detailed_answer:"Step-by-step: (1) Find your polling booth (check voter ID or voters.eci.gov.in). (2) Carry a valid photo ID. (3) Join the queue. (4) The officer verifies your name in the electoral roll. (5) Indelible ink is applied to your left index finger. (6) You press the button on the EVM next to your candidate. (7) VVPAT shows a slip for 7 seconds to confirm. Done!", eli18_answer:"Show up, show your ID, get your finger inked so you can't vote twice, then press your candidate's button on the machine. Simple!", category:"General", keywords:["how to vote","voting steps","how vote works","cast vote","voting process"] },
+  { id:20, question:"What documents are needed to vote?", short_answer:"Your Voter ID (EPIC card) OR any of 12 alternative photo IDs like Aadhaar, Passport, or Driving License.", detailed_answer:"Primary: Voter ID (EPIC card). Alternative IDs accepted: Aadhaar card, Passport, Driving License, PAN card, MNREGA job card, Bank/Post Office passbook with photo, Smart card (CGHS/ECHS), Pension documents with photo, NPR Smart card, Official identity card issued by Central/State Govt., Disability ID card. Your name must be in the electoral roll.", eli18_answer:"Bring your Voter ID — or if you don't have it, Aadhaar or passport works too! Just make sure your name is on the voter list.", category:"General", keywords:["documents for voting","id for voting","what to carry voting"] },
+  { id:21, question:"What is a voter ID card?", short_answer:"An official photo identity card (EPIC) issued by the Election Commission to registered voters.", detailed_answer:"The Voter ID card, officially called EPIC (Elector's Photo Identity Card), is issued free of cost by the Election Commission of India to all registered voters. It contains your photo, name, father's/husband's name, date of birth, address, and unique voter ID number. It serves both as identity proof and facilitates voting.", eli18_answer:"It's your official 'I am a voter' card from the government. It has your photo and helps you vote at your polling booth.", category:"General", keywords:["voter id","voter card","epic card","voter id card"] },
+  { id:22, question:"Can I vote without voter ID?", short_answer:"Yes! 12 alternative photo ID documents are accepted at polling booths.", detailed_answer:"You can vote without the Voter ID (EPIC) card as long as your name is in the electoral roll. Present any of these: Aadhaar card, Passport, Driving License, PAN card, MNREGA Job Card, Bank passbook with photo, Pension document with photo, Smart card (CGHS/ECHS), NPR smart card, government-issued photo ID, disability ID, or service photo ID.", eli18_answer:"Lost your voter card? No worries! Show your Aadhaar or driving license — as long as your name is on the list, you can vote.", category:"General", keywords:["vote without voter id","no voter id","lost voter id"] },
+  { id:23, question:"How do I register to vote?", short_answer:"Apply online at voters.eci.gov.in using Form 6, or submit at your local Electoral Registration Office.", detailed_answer:"To register: (1) Visit voters.eci.gov.in or download the Voter Helpline App. (2) Click 'New Voter Registration' and fill Form 6. (3) Upload: Aadhaar/DOB proof, address proof, and passport photo. (4) Submit online or at your local ERO office. (5) Track your application with the Reference Number. (6) Receive your EPIC card within 30 days after verification.", eli18_answer:"Go to the government voter website, fill a form, upload your ID, and wait for your voter card to arrive at home. That's it!", category:"General", keywords:["register voter","voter registration","how to register","sign up voter","form 6"] },
+  { id:24, question:"What is Form 6?", short_answer:"Form 6 is the official application form for new voter registration in India.", detailed_answer:"Form 6 is used by citizens applying to be included in the electoral roll for the first time. It must be submitted to the Electoral Registration Officer (ERO) of the constituency where you normally reside. You need: proof of age, proof of address, and a recent photograph. Available online at voters.eci.gov.in and at local ERO offices.", eli18_answer:"Form 6 is just the application you fill out to get added to the voter list for the first time. Like a sign-up form for voting!", category:"General", keywords:["form 6","what is form 6","form six"] },
+  { id:25, question:"What if my name is missing from the voter list?", short_answer:"Request a Tender Vote (Provisional Ballot), contact the Presiding Officer, or file a complaint with the ERO.", detailed_answer:"If your name is missing: (1) Stay calm and ask the Presiding Officer to check thoroughly. (2) If still not found, request a 'Tender Vote' — a provisional ballot you can cast, which is kept separate and counted only if it affects the result. (3) Contact your constituency's ERO to investigate. (4) For future elections, register online at voters.eci.gov.in using Form 6.", eli18_answer:"Don't give up! Tell the officer at the booth. You can ask for a 'Tender Vote' even if your name is missing. And fix it for next time by re-registering.", category:"General", keywords:["name missing voter list","not in voter list","name not found","missing from list"] },
+  { id:26, question:"What is an EVM?", short_answer:"An Electronic Voting Machine (EVM) is a tamper-proof device used to cast and count votes in Indian elections.", detailed_answer:"An EVM consists of two units: (1) Control Unit — operated by the Presiding Officer to manage the voting process. (2) Ballot Unit — placed in the voting compartment where voters press the button. EVMs have no internet/Bluetooth connectivity, use one-time programmable chips, and can record up to 3,840 votes. They replaced paper ballots from 2001 onwards.", eli18_answer:"EVM is like a super-secure voting calculator. You press a button for your candidate and it silently counts your vote. No paper, no mess!", category:"General", keywords:["evm","electronic voting machine","voting machine","evm machine"] },
+  { id:27, question:"How does an EVM work?", short_answer:"Voters press a button next to their candidate's name on the Ballot Unit, which records the vote in the Control Unit.", detailed_answer:"EVM operation: (1) The Presiding Officer presses the 'Ballot' button on the Control Unit to enable voting. (2) The voter presses the candidate's button on the Ballot Unit. (3) A red light glows and a beep confirms the vote is recorded. (4) The machine is locked until the next voter is enabled. All votes are stored in encrypted memory and counted after election using the Control Unit.", eli18_answer:"The officer unlocks the machine, you press your candidate's button, it beeps and locks — your vote is safely stored inside!", category:"General", keywords:["how evm works","evm working","evm mechanism"] },
+  { id:28, question:"What is VVPAT?", short_answer:"Voter Verified Paper Audit Trail — a machine that prints and displays a slip showing who you voted for, for 7 seconds.", detailed_answer:"VVPAT (Voter Verified Paper Audit Trail) is attached to every EVM. After pressing the EVM button, a paper slip is printed showing the candidate's name, serial number, and symbol. It's visible through a glass window for 7 seconds, then drops into a sealed compartment. Introduced in 2013, it provides an independent audit trail for election verification.", eli18_answer:"After you vote, a small machine shows a paper slip for 7 seconds saying who you voted for. It's like a receipt — proof your vote was counted correctly!", category:"General", keywords:["vvpat","paper trail","voter verified","vvpat machine"] },
+  { id:29, question:"Can EVMs be hacked?", short_answer:"No. EVMs have no wireless connectivity and use one-time programmable chips that cannot be altered after programming.", detailed_answer:"EVMs cannot be remotely hacked because: (1) They have zero internet, Wi-Fi, or Bluetooth components. (2) They use one-time programmable (OTP) microcontrollers — the code cannot be rewritten. (3) They are stored in double-locked strong rooms with 24/7 CCTV. (4) All parties can appoint agents to observe storage and counting. (5) Mock polls are conducted before each election for verification.", eli18_answer:"EVMs are like a sealed box with no door to the internet. There's nothing to hack into remotely — it's physically impossible!", category:"General", keywords:["evm hacked","hack evm","evm tampered","evm manipulation"] },
+  { id:30, question:"What is the Model Code of Conduct?", short_answer:"A set of guidelines issued by ECI that all political parties and candidates must follow from election announcement until results.", detailed_answer:"The MCC covers: (1) General conduct — no personal attacks, religion-based appeals, or voter bribing. (2) Government: no new schemes or project inaugurations for political gain. (3) Polling day: no campaigning within 48 hours of voting (silent period). (4) Party in power: cannot use government machinery for campaigns. Violations can lead to FIRs, warnings, or disqualification.", eli18_answer:"MCC is the election rulebook. Once election dates are announced, politicians must play fair — no freebies, no religious speeches, no misusing government resources.", category:"General", keywords:["mcc","model code of conduct","code of conduct election","election rules conduct"] },
+  { id:31, question:"What is NOTA?", short_answer:"NOTA (None of the Above) allows voters to formally reject all candidates without abstaining.", detailed_answer:"NOTA was introduced by the Supreme Court of India in 2013. It appears as the last option on EVMs. Important: NOTA has no legal effect — even if NOTA gets the most votes, the candidate with the highest vote count among contestants wins. In 2019 elections, over 65 lakh (1.06%) votes were cast for NOTA. It primarily sends a moral message to political parties.", eli18_answer:"NOTA is the 'I don't like any of these people' option. You still vote (participate), but for nobody. It shows parties people aren't happy with their choices.", category:"General", keywords:["nota","none of the above","reject candidate"] },
+  { id:32, question:"Who can contest elections?", short_answer:"Any Indian citizen who meets the age requirement, is a registered voter, and is not disqualified under law.", detailed_answer:"To contest Lok Sabha: must be Indian citizen, at least 25 years old, a voter anywhere in India, and not hold a government office of profit. For Rajya Sabha: 30 years minimum. Disqualifications include: unsound mind (court-declared), undischarged insolvent, holding office of profit, foreign citizenship, or conviction with 2+ year sentence.", eli18_answer:"If you're 25+, Indian, and not a government employee or convicted criminal, you can try to become an MP! It's open to all.", category:"General", keywords:["who can contest","election eligibility candidate","contest election","stand for election"] },
+  { id:33, question:"Why should first-time voters vote?", short_answer:"Your vote directly shapes who governs your city, state, and country. First-time voters can tip election results.", detailed_answer:"Every vote matters: (1) Many elections are won by small margins — your single vote can make a difference. (2) Young voters' priorities (jobs, education, climate) get ignored if they don't vote. (3) Voting is your constitutional right AND civic duty. (4) Low youth turnout means older demographics dominate policy decisions. (5) First-time voter campaigns are showing results — 2019 saw record turnout of 67.4%.", eli18_answer:"Imagine your school canteen menu was decided by a vote but you didn't vote. Then you can't complain about the food! Same logic applies to the country.", category:"General", keywords:["first time voter","why vote","should i vote","importance of voting"] },
+  { id:34, question:"Can NRIs vote?", short_answer:"Yes, NRIs can vote but must be physically present in India at their registered constituency on election day.", detailed_answer:"NRIs (Non-Resident Indians) retain their voting rights. To vote: (1) Register using Form 6A at voters.eci.gov.in. (2) Their name is added to the electoral roll of their hometown constituency. (3) They must physically travel to India and their polling booth to vote. Currently, proxy voting (voting from abroad) is NOT allowed, though legislation has been proposed.", eli18_answer:"NRIs CAN vote in India, but they have to physically come back to India and go to their home constituency to cast the vote. No remote voting yet!", category:"General", keywords:["nri vote","overseas vote","indian abroad vote"] },
+  { id:35, question:"What is a coalition government?", short_answer:"A coalition government is formed when no single party wins enough seats for majority, so multiple parties join together to govern.", detailed_answer:"A coalition government forms when: No single party gets 272+ seats (simple majority) in Lok Sabha. Multiple parties form an alliance, negotiate a Common Minimum Programme, and jointly form the government. Examples: NDA (1999-2004), UPA (2004-2014), NDA (2024-present). The President invites the leader of the largest coalition to form government.", eli18_answer:"Imagine no single team won the tournament, so 3 teams joined together and share the trophy. That's a coalition — parties teaming up to rule together.", category:"General", keywords:["coalition","coalition government","coalition meaning","minority government"] },
+  { id:36, question:"What is a hung parliament?", short_answer:"A situation where no party or coalition has enough seats to form a majority government.", detailed_answer:"A hung parliament occurs when no single party or pre-election alliance wins 272+ seats in Lok Sabha. The President then invites the single largest party to form government and prove majority within a time limit. If no one can prove majority, fresh elections may be called. India experienced hung parliaments in 1989 (V.P. Singh govt), 1996, and 1998.", eli18_answer:"It's like a class election where 3 candidates each got nearly equal votes and nobody has a clear winner. Everyone's stuck — hung parliament!", category:"General", keywords:["hung parliament","hung assembly","no majority"] },
+  { id:37, question:"What is fake news during elections?", short_answer:"Fabricated or misleading information spread to influence voters or create confusion during election campaigns.", detailed_answer:"Election fake news includes: (1) False claims about candidates (fake criminal records, morphed photos). (2) Incorrect voting dates/locations to confuse voters. (3) Fabricated ECI announcements. (4) Deepfake videos of politicians. To verify: check PIB Fact Check (pib.gov.in), use Fact Check India on social media, or verify with official ECI channels. Report fakes to the ECI's cVIGIL app.", eli18_answer:"During elections, some people spread lies on WhatsApp/Instagram to trick voters. Always check if news is from official sources before sharing!", category:"General", keywords:["fake news election","misinformation election","false information voting"] },
+  { id:38, question:"What are exit polls?", short_answer:"Surveys conducted right after voters leave polling booths to predict election results before the official count.", detailed_answer:"Exit polls are conducted by research agencies/media outlets by sampling voters as they exit polling booths. They ask who the voter chose. Results are published after voting ends (not during, as ECI prohibits it). They are predictions, not results — they can be wrong. The ECI prohibits publishing exit polls until voting ends in all phases of a multi-phase election.", eli18_answer:"After you vote and leave the booth, a researcher might ask 'Who did you vote for?' Their answers are analyzed to guess who'll win. It's like a quick preview before the real result!", category:"General", keywords:["exit poll","exit polls","what is exit poll"] },
+  { id:39, question:"How are election results declared?", short_answer:"Counting begins on Counting Day at Counting Centres, watched by agents of all candidates, and results are declared as constituencies finish counting.", detailed_answer:"After voting ends: (1) EVMs are stored in strong rooms with security and candidate agents present. (2) On Counting Day, EVMs are brought to Counting Centres. (3) VVPAT slips of 5 random booths per constituency are manually verified. (4) Votes are counted in rounds on EVM. (5) When a candidate exceeds the 'winning margin', the Returning Officer declares them elected. (6) ECI announces final results.", eli18_answer:"On counting day, all the sealed voting machines are opened and counted in a big hall. Everyone watches. The one with most votes wins and is announced officially!", category:"General", keywords:["election results","how results declared","counting day","result declaration"] },
+  { id:40, question:"What happens if no party gets majority?", short_answer:"The President invites the largest party/coalition to prove majority. If unsuccessful, President's Rule may be imposed.", detailed_answer:"Process when no majority: (1) President invites the single largest party to form government. (2) That party must prove majority within 15 days via floor test in Lok Sabha. (3) If they fail, the second-largest coalition gets a chance. (4) If everyone fails, fresh elections are called (or President's Rule in states). This is governed by Article 75 (for Centre) and Article 164 (for states) of the Constitution.", eli18_answer:"If nobody wins enough seats, it's like no team got more than half the points. The President picks the team closest to majority and says: 'Try to get others on your side in 15 days!'", category:"General", keywords:["no majority","president rule","no clear winner","hung parliament formation"] }
 ];
 
-export const FALLBACK_RESPONSE = `That's a great question! 🤔 I'm currently running in **demo mode** and can best answer questions about:
+export const MASTER_SYSTEM_PROMPT = `You are Election Copilot.`;
 
-- 🗳️ How to register as a voter
-- 📋 The voting process & polling booths  
-- 🖥️ EVMs and how they work
-- 📜 Model Code of Conduct
-- 🛡️ Election myths & fact-checking
-- 🏛️ Election Commission of India (ECI)
-- 📋 NOTA (None of the Above)
-- 🎮 Simulation scenarios
-
-Try asking something like *"How do I register to vote?"* or *"What is an EVM?"* and I'll give you a detailed, friendly explanation! 😊`;
+export const FALLBACK_RESPONSE = "Great question! I can help you with voter registration, EVMs, voting process, election results, parliament, constituencies, and more. Try asking something specific like 'How do I register to vote?' or 'What is an EVM?'";
