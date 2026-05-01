@@ -17,12 +17,132 @@ const GUIDED_PATHS = [
 ];
 
 const SCENARIOS = [
-  { icon: '🎓', title: "I moved to another city for college", steps: ["You can vote in your hometown constituency.", "You don't need to re-register if you return home on election day.", "OR transfer your voter registration to your new city using Form 6.", "Visit voters.eci.gov.in to update your address."] },
-  { icon: '🎂', title: "I turned 18 recently", steps: ["Check if you qualify: must be 18 by Jan 1 of the election year.", "Register online at voters.eci.gov.in using Form 6.", "Upload Aadhaar, address proof, and a photo.", "Track your application — card arrives in ~30 days."] },
-  { icon: '📋', title: "My name is missing from voter list", steps: ["Stay calm. Ask the Presiding Officer to re-check thoroughly.", "Request a 'Tender Vote' — a provisional ballot you can cast.", "Your Tender Vote is kept separate and counted only if decisive.", "For future: register at voters.eci.gov.in to fix the issue."] },
-  { icon: '♿', title: "I have a disability", steps: ["Request a wheelchair or accessibility support at your booth.", "PWD voters get priority queuing — no need to wait long.", "You can request a companion to assist you inside the booth.", "Contact your ERO in advance for home voting arrangements (Form 12D)."] },
-  { icon: '👴', title: "I'm a senior citizen (80+)", steps: ["Voters aged 80+ can apply for postal ballot (vote from home).", "File Form 12D with your ERO before the election schedule.", "A polling officer will visit your home with a ballot.", "You can also go to the booth — you get priority queue access."] },
-  { icon: '✈️', title: "I'm an NRI / live abroad", steps: ["NRIs retain voting rights — register using Form 6A.", "Visit voters.eci.gov.in and select 'Overseas Voter Registration'.", "You MUST physically travel to India to vote at your constituency.", "Remote or proxy voting is not yet allowed for NRIs."] },
+  { icon: '🎓', title: "I moved to another city for college",
+    steps: ["Vote in hometown, OR transfer registration using Form 6.", "Go to voters.eci.gov.in to update your address.", "You cannot vote in both places — choose one."],
+    answer: "🎓 You moved to another city for college — here's your guide:
+
+Option 1: Vote in your Hometown
+• Travel back on election day and vote at your registered constituency
+• No changes needed — your current Voter ID works
+
+Option 2: Transfer Your Registration
+• Fill Form 6 at voters.eci.gov.in (select 'Shifting of Residence')
+• Upload proof of new city address (hostel letter, rent agreement)
+• This takes 4-8 weeks
+
+📌 Important: You cannot vote in both places. Choose one option.
+
+💡 Tip: If elections are soon, Option 1 is faster. Apply for Option 2 early for future elections." },
+  { icon: '🎂', title: "I turned 18 recently",
+    steps: ["Must be 18 by Jan 1 of the election year.", "Register at voters.eci.gov.in using Form 6.", "Upload Aadhaar, address proof, and a photo.", "Voter ID card arrives in ~30 days."],
+    answer: "🎂 Congratulations on turning 18! Here's how to register to vote:
+
+Step 1: Check Eligibility
+• You must be 18 as of January 1 of the qualifying year
+
+Step 2: Fill Form 6 Online
+• Go to voters.eci.gov.in → 'New Voter Registration' → Form 6
+
+Step 3: Upload Documents
+• Proof of Age: Aadhaar, birth certificate, or passport
+• Proof of Address: Aadhaar or utility bill
+• 1 passport-size photograph
+
+Step 4: Track & Receive
+• You'll get a Reference Number to track your application
+• Your Voter ID (EPIC card) arrives in ~30 days
+
+🎉 Welcome to India's democracy — your vote is your voice!" },
+  { icon: '📋', title: "My name is missing from voter list",
+    steps: ["Ask the Presiding Officer to re-check the list.", "Request a 'Tender Vote' — your legal right.", "Call Voter Helpline: 1950 for immediate help.", "After election: register at voters.eci.gov.in."],
+    answer: "📋 Your name is missing from the voter list — here's what to do:
+
+At the Polling Booth — Right Now:
+1. Stay calm. Ask the Presiding Officer to check the list again carefully
+2. Show your Voter ID — they might find you under a slightly different spelling
+3. Request a Tender Vote (Provisional Ballot) — this is your LEGAL RIGHT!
+   • You CAN cast this vote even if your name is missing
+   • It is kept in a separate sealed envelope
+   • Counted only if the winning margin is less than total Tender Votes
+4. Call Voter Helpline: 1950 for immediate guidance
+
+Fix It Permanently:
+• Go to voters.eci.gov.in
+• Check your registration status
+• If not found: fill Form 6 to register
+• If found with errors: fill Form 8 to correct details
+
+💡 Always check your voter list status 2-3 weeks before election day!" },
+  { icon: '♿', title: "I have a disability",
+    steps: ["You get priority queue access — no long waiting.", "Wheelchair ramp access at all booths.", "Bring a companion to assist you inside the booth.", "Apply for home postal ballot using Form 12D."],
+    answer: "♿ Voting with a Disability — Your Complete Guide:
+
+At the Polling Booth:
+• Priority Queue: Skip the long line — you have first access
+• Wheelchair Access: All booths must have ramp access
+• Braille EVM: Available for visually impaired voters
+• Companion: You can bring a trusted adult inside the voting compartment
+
+Home Voting Option (Postal Ballot):
+• Cannot travel? Apply for a Postal Ballot
+• Fill Form 12D and submit to your ERO before the deadline
+• A polling officer visits your home to collect your vote
+
+How to Request in Advance:
+• Call Voter Helpline: 1950
+• Contact your local ERO office
+• Apply via the Voter Helpline App
+
+If Denied Help:
+• Call 1950 immediately
+• Report via cVIGIL app
+• Note the officer's name and booth number
+
+🇮🇳 Democracy is for everyone — including you!" },
+  { icon: '👴', title: "I'm a senior citizen (80+)",
+    steps: ["Apply for postal ballot (vote from home) using Form 12D.", "A polling officer will visit your home to collect your vote.", "OR visit booth — you get priority queue access."],
+    answer: "👴 Senior Citizen Voter Guide (Age 80+):
+
+Option 1: Vote from Home (Postal Ballot) — Recommended
+• Voters 80+ are eligible to vote by postal ballot
+• Fill Form 12D and submit to your ERO before election dates are announced
+• A polling official visits your home on a designated day
+• You mark your choice on the ballot — officer collects it securely
+
+Option 2: Visit the Polling Booth
+• You get Priority Queue access — no long waits!
+• Wheelchair and ramp access available
+• You can bring a companion to assist you
+
+How to Apply:
+• Call Voter Helpline: 1950
+• Fill Form 12D at voters.eci.gov.in
+• Apply EARLY — there are deadlines, and slots are limited
+
+💡 Tip: Apply for postal ballot as soon as election dates are announced.
+🙏 Your vote and your wisdom matter!" },
+  { icon: '✈️', title: "I'm an NRI / live abroad",
+    steps: ["Register using Form 6A at voters.eci.gov.in.", "You MUST physically travel to India to vote.", "Go to your registered hometown constituency on election day.", "Remote/proxy voting is NOT yet available for NRIs."],
+    answer: "✈️ NRI Voter Guide — How to Vote from Abroad:
+
+Yes, NRIs CAN vote in Indian elections!
+
+Step 1: Register as an Overseas Voter
+• Go to voters.eci.gov.in → 'Overseas Voter Registration' → Form 6A
+• Upload: Indian Passport copy and current overseas address proof
+• Your name gets added to the electoral roll of your hometown constituency
+
+Step 2: Travel to India to Vote
+• You MUST physically travel to India to vote
+• Go to your registered constituency's polling booth on election day
+• Remote, proxy, or e-voting from abroad is NOT available yet
+
+Plan Ahead:
+• Election dates are announced 4-6 weeks in advance
+• Book flights early if you plan to come back to vote
+• Check your registration status at voters.eci.gov.in before buying tickets
+
+🇮🇳 Your roots matter. Your vote matters. Come home and vote!" },
 ];
 
 const COMPARISONS = [
@@ -67,6 +187,17 @@ function useElectionChat() {
   const [loading, setLoading] = useState(false);
   const [explainLevel, setExplainLevel] = useState<'normal' | 'child'>('normal');
 
+  // Inject a pre-written answer directly (no API call)
+  const sendDirect = (userText: string, answer: string) => {
+    const userId = Date.now().toString();
+    const aiId = (Date.now() + 1).toString();
+    setMessages(p => [
+      ...p,
+      { id: userId, role: 'user', content: userText },
+      { id: aiId, role: 'assistant', content: answer },
+    ]);
+  };
+
   const send = async (text: string) => {
     if (!text.trim() || loading) return;
     const userId = Date.now().toString();
@@ -96,7 +227,7 @@ function useElectionChat() {
     }
   };
 
-  return { messages, input, setInput, loading, send, explainLevel, setExplainLevel };
+  return { messages, input, setInput, loading, send, sendDirect, explainLevel, setExplainLevel };
 }
 
 // ── Components ───────────────────────────────────────
@@ -126,7 +257,7 @@ function Navbar({ view, setView }: { view: View; setView: (v: View) => void }) {
   );
 }
 
-function HomeView({ setView, onQuery }: { setView: (v: View) => void; onQuery: (q: string) => void }) {
+function HomeView({ setView, onQuery, onSendDirect }: { setView: (v: View) => void; onQuery: (q: string) => void; onSendDirect: (u: string, a: string) => void }) {
   return (
     <div>
       {/* Hero */}
@@ -157,7 +288,7 @@ function HomeView({ setView, onQuery }: { setView: (v: View) => void; onQuery: (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
             {GUIDED_PATHS.map((p, i) => (
               <motion.button key={i} whileHover={{ y: -3 }} transition={{ duration: 0.15 }}
-                onClick={() => { if (p.action) { setView(p.action); } else { onQuery(p.query!); setView('chat'); } }}
+                onClick={() => { if (p.action) { setView(p.action); } else if (p.answer) { onSendDirect(p.title, p.answer); setView('chat'); } else { onQuery(p.query!); setView('chat'); } }}
                 className="card" style={{ padding: 24, textAlign: 'left', cursor: 'pointer', background: 'none', border: '1px solid var(--border)', display: 'block', width: '100%' }}>
                 <div style={{ fontSize: 28, marginBottom: 12 }}>{p.icon}</div>
                 <div style={{ fontFamily: 'Manrope', fontWeight: 700, fontSize: 15, marginBottom: 6 }}>{p.title}</div>
@@ -253,7 +384,7 @@ function CompareView() {
   );
 }
 
-function ScenariosView({ onQuery, setView }: { onQuery: (q: string) => void; setView: (v: View) => void }) {
+function ScenariosView({ sendDirect, setView }: { sendDirect: (u: string, a: string) => void; setView: (v: View) => void }) {
   return (
     <div className="container" style={{ padding: '40px 24px' }}>
       <p className="section-eyebrow">Scenario Guidance</p>
@@ -272,8 +403,9 @@ function ScenariosView({ onQuery, setView }: { onQuery: (q: string) => void; set
                 </div>
               ))}
             </div>
-            <button onClick={() => { onQuery(s.title); setView('chat'); }} style={{ marginTop: 20, fontSize: 12, color: 'var(--accent-dark)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-              Ask Copilot about this →
+            <button onClick={() => { sendDirect(s.title, s.answer); setView('chat'); }}
+              style={{ marginTop: 20, fontSize: 12, color: 'var(--accent-dark)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+              Get full guidance →
             </button>
           </motion.div>
         ))}
@@ -341,18 +473,17 @@ export default function App() {
   const [view, setView] = useState<View>('home');
   const chat = useElectionChat();
 
-  const handleQuery = (q: string) => {
-    chat.send(q);
-  };
+  const handleQuery = (q: string) => { chat.send(q); };
+  const handleSendDirect = (userText: string, answer: string) => { chat.sendDirect(userText, answer); };
 
   return (
     <>
       <Navbar view={view} setView={setView} />
       <AnimatePresence mode="wait">
         <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
-          {view === 'home' && <HomeView setView={setView} onQuery={handleQuery} />}
+          {view === 'home' && <HomeView setView={setView} onQuery={handleQuery} onSendDirect={handleSendDirect} />}
           {view === 'compare' && <CompareView />}
-          {view === 'scenarios' && <ScenariosView onQuery={handleQuery} setView={setView} />}
+          {view === 'scenarios' && <ScenariosView sendDirect={handleSendDirect} setView={setView} />}
           {view === 'chat' && <ChatView chat={chat} />}
         </motion.div>
       </AnimatePresence>
