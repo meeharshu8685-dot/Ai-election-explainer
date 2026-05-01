@@ -41,25 +41,7 @@ export default function RootLayout({
       </head>
       <body style={{ margin: 0, padding: 0 }}>
         {/* Skip to main content for keyboard/screen reader accessibility */}
-        <a
-          href="#main-content"
-          style={{
-            position: "absolute",
-            left: "-9999px",
-            top: "auto",
-            width: 1,
-            height: 1,
-            overflow: "hidden",
-          }}
-          onFocus={(e) => {
-            (e.target as HTMLAnchorElement).style.left = "0";
-            (e.target as HTMLAnchorElement).style.width = "auto";
-            (e.target as HTMLAnchorElement).style.height = "auto";
-          }}
-          onBlur={(e) => {
-            (e.target as HTMLAnchorElement).style.left = "-9999px";
-          }}
-        >
+        <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
         <main id="main-content" role="main">

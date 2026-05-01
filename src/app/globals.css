@@ -204,3 +204,25 @@ h1,h2,h3,h4,h5,h6 {
   0%,100% { opacity: 1; } 50% { opacity: 0.3; }
 }
 .pulse-dot { animation: pulse-dot 1.2s ease infinite; }
+
+/* ── Accessibility ── */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.skip-link:focus {
+  left: 16px;
+  top: 16px;
+  width: auto;
+  height: auto;
+  padding: 12px 24px;
+  background: var(--accent);
+  color: white;
+  z-index: 9999;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+}
