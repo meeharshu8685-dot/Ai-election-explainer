@@ -1,57 +1,72 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { streamText, StreamingTextResponse } from "ai";
-
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY || "",
-});
-import { MASTER_SYSTEM_PROMPT } from "@/lib/constants";
+import { MOCK_QA_DATABASE, FALLBACK_RESPONSE } from "@/lib/constants";
 
 export const runtime = "edge";
 
-export async function POST(req: Request) {
-  try {
-    if (!process.env.GEMINI_API_KEY) {
-      console.error("Missing GEMINI_API_KEY environment variable");
-      return new Response(JSON.stringify({ error: "Server configuration error. Please contact support." }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+function findAnswer(userMessage: string): string {
+  const lowerMsg = userMessage.toLowerCase();
+  for (const qa of MOCK_QA_DATABASE) {
+    if (qa.keywords.some((kw) => lowerMsg.includes(kw))) {
+      return qa.answer;
     }
-
-    const body = await req.json();
-    
-    // Basic Input Validation
-    if (!body || typeof body !== 'object') {
-      return new Response(JSON.stringify({ error: "Invalid request payload" }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-    }
-
-    const { messages, mode, persona, explainLevel } = body;
-
-    if (!Array.isArray(messages) || messages.length === 0) {
-      return new Response(JSON.stringify({ error: "Messages array is required" }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-    }
-
-    // Enforce message length limit for security
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage.content && lastMessage.content.length > 2000) {
-      return new Response(JSON.stringify({ error: "Message exceeds maximum length of 2000 characters." }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-    }
-
-    let contextPrompt = MASTER_SYSTEM_PROMPT;
-    contextPrompt += `\n\nActive Mode: ${mode || 'Learn Mode'}`;
-    contextPrompt += `\nUser Persona: ${persona || 'Beginner'}`;
-    if (explainLevel === 'child') {
-      contextPrompt += `\nComplexity Level: Explain like I'm 12 (use simple words and analogies).`;
-    }
-
-    const result = await streamText({
-      model: google("gemini-1.5-pro"),
-      system: contextPrompt,
-      messages,
-      maxRetries: 2, // Added for resilience
-    });
-
-    return new StreamingTextResponse(result.textStream);
-  } catch (error) {
-    console.error("Chat API Error:", error);
-    return new Response(JSON.stringify({ error: "An error occurred while processing your request." }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
+  return FALLBACK_RESPONSE;
 }
 
+function createStreamingResponse(text: string): ReadableStream<Uint8Array> {
+  const encoder = new TextEncoder();
+  const words = text.split(" ");
+
+  return new ReadableStream({
+    async start(controller) {
+      for (let i = 0; i < words.length; i++) {
+        const chunk = i === 0 ? words[i] : " " + words[i];
+        controller.enqueue(encoder.encode(chunk));
+        // Simulate natural typing speed: 20-50ms per word
+        await new Promise((r) => setTimeout(r, 25 + Math.random() * 20));
+      }
+      controller.close();
+    },
+  });
+}
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+
+    if (!body || typeof body !== "object") {
+      return new Response(JSON.stringify({ error: "Invalid request payload" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const { messages } = body;
+
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return new Response(JSON.stringify({ error: "Messages array is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const lastMessage = messages[messages.length - 1];
+    const userText: string = lastMessage?.content || "";
+
+    const answer = findAnswer(userText);
+    const stream = createStreamingResponse(answer);
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "X-Vercel-AI-Data-Stream": "v1",
+        "Transfer-Encoding": "chunked",
+      },
+    });
+  } catch (error) {
+    console.error("Chat API Error:", error);
+    return new Response(
+      JSON.stringify({ error: "An error occurred while processing your request." }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}

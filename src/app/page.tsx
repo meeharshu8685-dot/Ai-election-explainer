@@ -1,20 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { useChat } from 'ai/react';
+import { useState, useRef, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  MessageSquare, 
   Map, 
   ShieldCheck, 
   Gamepad2, 
   Info, 
   Send, 
-  User, 
-  ChevronRight,
-  Timeline as TimelineIcon,
   HelpCircle,
-  AlertTriangle
+  AlertTriangle,
+  Clock
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -32,22 +28,79 @@ const MODES = [
 
 const PERSONAS = ['Beginner', 'Student', 'Expert'];
 
+interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 export default function ElectionCopilot() {
   const [mode, setMode] = useState('Learn Mode');
   const [persona, setPersona] = useState('Beginner');
   const [explainLevel, setExplainLevel] = useState<'normal' | 'child'>('normal');
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 'welcome',
+      role: 'assistant',
+      content: "Hello! I'm your Election Copilot 🗳️ Ready to explore democracy? Try asking me about voter registration, EVMs, the voting process, or switch to Simulation Mode for an interactive scenario!",
+    },
+  ]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: '/api/chat',
-    body: { mode, persona, explainLevel },
-    initialMessages: [
-      {
-        id: 'welcome',
-        role: 'assistant',
-        content: "Hello! I'm your Election Copilot. Ready to explore democracy? Choose a mode above to get started!",
-      },
-    ],
-  });
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage: Message = { id: Date.now().toString(), role: 'user', content: input.trim() };
+    const assistantId = (Date.now() + 1).toString();
+
+    setMessages((prev) => [...prev, userMessage, { id: assistantId, role: 'assistant', content: '' }]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...messages, userMessage].map((m) => ({ role: m.role, content: m.content })),
+          mode,
+          persona,
+          explainLevel,
+        }),
+      });
+
+      if (!res.ok || !res.body) throw new Error('Failed to fetch response');
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        setMessages((prev) =>
+          prev.map((m) => m.id === assistantId ? { ...m, content: m.content + chunk } : m)
+        );
+      }
+    } catch {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantId
+            ? { ...m, content: "I'm sorry, something went wrong. Please try again!" }
+            : m
+        )
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <main className="flex h-screen max-h-screen p-4 gap-4 overflow-hidden">
@@ -113,7 +166,7 @@ export default function ElectionCopilot() {
         {/* Top Stats / Timeline Bar */}
         <div className="h-20 glass-panel flex items-center px-6 gap-8">
           <div className="flex items-center gap-4 flex-1">
-            <TimelineIcon className="text-white/40" size={20} />
+            <Clock className="text-white/40" size={20} />
             <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden relative">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-emerald-500 w-[45%] rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
             </div>
@@ -142,27 +195,24 @@ export default function ElectionCopilot() {
                   )}
                 >
                   <div className={cn(
-                    "max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed shadow-lg",
+                    "max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed shadow-lg whitespace-pre-wrap",
                     m.role === 'user' 
                       ? "bg-blue-600 text-white shadow-blue-900/40 rounded-tr-none" 
                       : "bg-slate-800/50 border border-white/10 text-white/90 rounded-tl-none backdrop-blur-sm"
                   )}>
                     {m.content}
+                    {m.role === 'assistant' && m.content === '' && isLoading && (
+                      <span className="inline-flex gap-1">
+                        <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce" />
+                        <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce [animation-delay:0.2s]" />
+                        <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce [animation-delay:0.4s]" />
+                      </span>
+                    )}
                   </div>
                 </motion.div>
               ))}
             </AnimatePresence>
-            {isLoading && (
-              <div className="flex justify-start gap-4">
-                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tl-none animate-pulse">
-                  <div className="flex gap-2">
-                    <div className="w-2 h-2 bg-white/20 rounded-full animate-bounce" />
-                    <div className="w-2 h-2 bg-white/20 rounded-full animate-bounce [animation-delay:0.2s]" />
-                    <div className="w-2 h-2 bg-white/20 rounded-full animate-bounce [animation-delay:0.4s]" />
-                  </div>
-                </div>
-              </div>
-            )}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input Area */}
@@ -170,13 +220,13 @@ export default function ElectionCopilot() {
             <form onSubmit={handleSubmit} className="relative">
               <input
                 value={input}
-                onChange={handleInputChange}
+                onChange={(e) => setInput(e.target.value)}
                 placeholder={mode === 'Simulation Mode' ? "Choose your move..." : "Ask me anything about elections..."}
                 className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-6 pr-14 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-white/20"
               />
               <button
                 type="submit"
-                disabled={!input || isLoading}
+                disabled={!input.trim() || isLoading}
                 className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send size={18} className="text-white" />
@@ -197,14 +247,19 @@ export default function ElectionCopilot() {
             <p className="text-white/70">"EVMs can be hacked easily by connecting them to Bluetooth."</p>
             <div className="pt-2 border-t border-white/5 flex items-center justify-between">
               <span className="text-red-400 font-bold uppercase tracking-widest text-[9px]">Fact: False</span>
-              <button className="text-blue-400 font-medium hover:underline">Read source</button>
+              <button 
+                onClick={() => setInput('Tell me about EVM misinformation')}
+                className="text-blue-400 font-medium hover:underline"
+              >
+                Ask Copilot
+              </button>
             </div>
           </div>
         </div>
 
         <div className="glass-panel flex-1 p-6 space-y-6 overflow-y-auto">
           <h3 className="font-bold flex items-center gap-2">
-            <TimelineIcon className="text-blue-400" size={18} />
+            <Clock className="text-blue-400" size={18} />
             Election Timeline
           </h3>
           <div className="space-y-6 relative">
